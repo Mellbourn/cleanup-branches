@@ -1,5 +1,6 @@
 #!/usr/bin/env zx
 
+const workingDir = process.cwd();
 cd(`${$.env.HOME}/code/experiments/`);
 const repo = "cleanup-branches-test";
 
@@ -78,7 +79,7 @@ await $`git switch current`;
 
 console.log(chalk.bold("****************** ACT **********************"));
 
-await $`echo $(yes n | cleanup-branches.mjs)`;
+await $`echo $(yes n | ${workingDir}/cleanup-branches.mjs)`;
 
 console.log(chalk.bold("****************** ASSERT *******************"));
 
@@ -105,7 +106,7 @@ await $`git lol --color=always`;
 
 console.log(chalk.bold("****************** ACT **********************"));
 
-await $`echo $(yes y | cleanup-branches.mjs)`;
+await $`echo $(yes y | ${workingDir}/cleanup-branches.mjs)`;
 
 console.log(chalk.bold("****************** ASSERT *******************"));
 
