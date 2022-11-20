@@ -26,5 +26,6 @@
   },
   "dependencies": {
     "zx": "^7.1.1"
-  }
+  },
+  "type": "module"
 }
