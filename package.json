@@ -2,8 +2,8 @@
   "name": "cleanup-branches",
   "version": "0.0.4",
   "description": "cli to remove git branches",
-  "main": "index.mjs",
-  "bin": "./index.mjs",
+  "main": "index.mts",
+  "bin": "./index.mts",
   "scripts": {
     "test": "zx test.mjs",
     "release": "npm version patch && npm publish --access=public"
