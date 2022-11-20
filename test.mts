@@ -1,31 +1,13 @@
 #!/usr/bin/env npx --yes --package=ts-node -- ts-node-esm --swc
 
-import { question, chalk, fs } from "zx";
-import { $, cd, ProcessOutput } from "zx/core";
+import { chalk, fs } from "zx";
+import { $, cd } from "zx/core";
 
 const workingDir = process.cwd();
-cd(`${$.env.HOME}/code/experiments/`);
-const repo = "cleanup-branches-test";
-
-// the following was an attempt to delete the repo, but that was too difficult
-// try {
-//   await $`trash ${repo}`;
-//   await $`gh auth refresh -h github.com -s delete_repo`;
-//   await $`gh repo delete --confirm ${repo}`;
-// } catch (p) {
-//   console.log(`No repo to delete (${p.exitCode})`);
-// }
-
-await $`mkdir -p ${repo}`;
-let repoExists = false;
-try {
-  await $`gh repo view ${repo}`;
-  repoExists = true;
-} catch (p) {}
-if (!repoExists) {
-  await $`gh repo create ${repo} --public -c -d 'repo for testing cleanup-branches.mts'`;
-}
-cd(repo);
+const { stdout } = await $`mktemp -d /tmp/cleanup-test.$(date -Idate).XXXXX`;
+cd(stdout.trim());
+const repo = "Mellbourn/cleanup-branches-test";
+await $`gh repo clone ${repo} .`;
 
 const addCommittedFile = async (name: string) => {
   if (!fs.existsSync(name)) {
@@ -68,11 +50,7 @@ const createBranch = async (
   await $`git switch main`;
 };
 
-if (await branchExists("main")) {
-  await $`git switch main`;
-}
-await $`git reset --hard $(git log --reverse --format=%H|head -1)`;
-await $`git cleanup-all`;
+await $`git switch main`;
 await addCommittedFile("firstFile.txt");
 await $`git push -u origin main`;
 
