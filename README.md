@@ -4,15 +4,9 @@
 
 It automatically removes merged branches, locally and remotely. It then prompts for each unmerged branch whether you want to remove it or not.
 
+It is assumed that the main branch that should be merged to is named `main`, not `master`.
+
 ## Installation
-
-Note, this script is written using <https://github.com/google/zx> and requires zx to be installed globally.
-
-```bash
-npm install -g zx
-```
-
-Then install the script:
 
 ```bash
 npm install -g cleanup-branches

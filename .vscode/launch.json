@@ -11,8 +11,15 @@
             "skipFiles": [
                 "<node_internals>/**"
             ],
-            "runtimeExecutable": "${env:HOME}/.asdf/shims/zx",
-            "program": "${workspaceFolder}/cleanup-branches.mjs"
+            "runtimeExecutable": "npx",
+            "runtimeArgs": [
+                "--yes",
+                "--package=ts-node",
+                "--",
+                "ts-node-esm",
+                "--swc"
+            ],
+            "program": "${workspaceFolder}/test.mts"
         }
     ]
 }
