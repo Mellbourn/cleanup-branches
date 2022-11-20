@@ -1,7 +1,5 @@
 #!/usr/bin/env zx
 
-import "zx/globals";
-
 const workingDir = process.cwd();
 cd(`${$.env.HOME}/code/experiments/`);
 const repo = "cleanup-branches-test";
@@ -81,7 +79,7 @@ await $`git switch current`;
 
 console.log(chalk.bold("****************** ACT **********************"));
 
-await $`echo $(yes n | ${workingDir}/cleanup-branches.mjs)`;
+await $`echo $(yes n | ${workingDir}/index.mjs)`;
 
 console.log(chalk.bold("****************** ASSERT *******************"));
 
@@ -108,7 +106,7 @@ await $`git lol --color=always`;
 
 console.log(chalk.bold("****************** ACT **********************"));
 
-await $`echo $(yes y | ${workingDir}/cleanup-branches.mjs)`;
+await $`echo $(yes y | ${workingDir}/index.mjs)`;
 
 console.log(chalk.bold("****************** ASSERT *******************"));
 
