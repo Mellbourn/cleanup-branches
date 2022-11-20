@@ -20,5 +20,8 @@
   "bugs": {
     "url": "https://github.com/Mellbourn/cleanup-branches/issues"
   },
-  "homepage": "https://github.com/Mellbourn/cleanup-branches#readme"
+  "homepage": "https://github.com/Mellbourn/cleanup-branches#readme",
+  "devDependencies": {
+    "typescript": "^4.9.3"
+  }
 }
