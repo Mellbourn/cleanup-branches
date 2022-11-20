@@ -23,5 +23,8 @@
   "homepage": "https://github.com/Mellbourn/cleanup-branches#readme",
   "devDependencies": {
     "typescript": "^4.9.3"
+  },
+  "dependencies": {
+    "zx": "^7.1.1"
   }
 }
