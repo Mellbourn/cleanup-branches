@@ -1,5 +1,7 @@
 #!/usr/bin/env zx
 
+import "zx/globals";
+
 const workingDir = process.cwd();
 cd(`${$.env.HOME}/code/experiments/`);
 const repo = "cleanup-branches-test";

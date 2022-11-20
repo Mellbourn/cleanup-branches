@@ -1,5 +1,7 @@
 #!/usr/bin/env zx
 
+import "zx/globals";
+
 // suppress quoting, it doesn't allow for dynamic commands
 const q = $.quote;
 $.quote = (v) => v;
