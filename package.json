@@ -5,7 +5,7 @@
   "main": "index.mts",
   "bin": "./index.mts",
   "scripts": {
-    "test": "zx test.mjs",
+    "test": "./test.mts",
     "release": "npm version patch && npm publish --access=public"
   },
   "repository": {

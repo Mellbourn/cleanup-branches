@@ -12,7 +12,7 @@
                 "<node_internals>/**"
             ],
             "runtimeExecutable": "${env:HOME}/.asdf/shims/zx",
-            "program": "${workspaceFolder}/cleanup-branches.mjs"
+            "program": "${workspaceFolder}/cleanup-branches.mts"
         }
     ]
 }

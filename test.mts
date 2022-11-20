@@ -1,4 +1,7 @@
-#!/usr/bin/env zx
+#!/usr/bin/env npx --yes --package=ts-node -- ts-node-esm --swc
+
+import { question, chalk, fs } from "zx";
+import { $, cd, ProcessOutput } from "zx/core";
 
 const workingDir = process.cwd();
 cd(`${$.env.HOME}/code/experiments/`);
@@ -20,11 +23,11 @@ try {
   repoExists = true;
 } catch (p) {}
 if (!repoExists) {
-  await $`gh repo create ${repo} --public -c -d 'repo for testing cleanup-branches.mjs'`;
+  await $`gh repo create ${repo} --public -c -d 'repo for testing cleanup-branches.mts'`;
 }
 cd(repo);
 
-const addCommittedFile = async (name) => {
+const addCommittedFile = async (name: string) => {
   if (!fs.existsSync(name)) {
     fs.writeFileSync(name, `content of ${name}`);
     await $`git add ${name}`;
@@ -32,7 +35,7 @@ const addCommittedFile = async (name) => {
   }
 };
 
-const branchExists = async (name) => {
+const branchExists = async (name: string) => {
   try {
     const { exitCode } = await $`git show-ref --quiet refs/heads/${name}`;
     return exitCode === 0;
@@ -41,12 +44,16 @@ const branchExists = async (name) => {
   }
 };
 
-const createBranch = async (name, isMerged = true, isPushed = false) => {
+const createBranch = async (
+  name: string,
+  isMerged = true,
+  isPushed = false
+) => {
   await $`git switch main`;
   if (await branchExists(name)) {
     try {
       await $`git push origin --delete ${name}`;
-    } catch (p) {
+    } catch (p: any) {
       console.log(`No branch to delete (${p.exitCode})`);
     }
     await $`git branch -D ${name}`;
@@ -79,7 +86,7 @@ await $`git switch current`;
 
 console.log(chalk.bold("****************** ACT **********************"));
 
-await $`echo $(yes n | ${workingDir}/index.mjs)`;
+await $`echo $(yes n | ${workingDir}/index.mts)`;
 
 console.log(chalk.bold("****************** ASSERT *******************"));
 
@@ -106,7 +113,7 @@ await $`git lol --color=always`;
 
 console.log(chalk.bold("****************** ACT **********************"));
 
-await $`echo $(yes y | ${workingDir}/index.mjs)`;
+await $`echo $(yes y | ${workingDir}/index.mts)`;
 
 console.log(chalk.bold("****************** ASSERT *******************"));
 
