@@ -1,4 +1,4 @@
-#!/usr/bin/env npx --yes --package=ts-node -- ts-node-esm
+#!/usr/bin/env npx --yes --package=ts-node -- ts-node-esm --swc
 
 import { question, chalk } from "zx";
 import { $, ProcessOutput } from "zx/core";
