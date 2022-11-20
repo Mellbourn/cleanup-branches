@@ -70,7 +70,7 @@ if (argv.e) {
 
 console.log(chalk.bold("****************** ACT **********************"));
 
-await $`echo $(${workingDir}/index.mts)`;
+await $`${workingDir}/index.mts`;
 
 console.log(chalk.bold("****************** ASSERT *******************"));
 
@@ -122,3 +122,25 @@ if (await branchExists("origin/unmergedPushed1")) {
 
 console.log(chalk.bold("****************** REPORT ********************"));
 await $`git lol --color=always`;
+
+await $`git switch current`;
+await addCommittedFile("another.txt");
+await $`git switch -c master`;
+
+console.log(chalk.bold("****************** ACT **********************"));
+
+await $`${workingDir}/index.mts`;
+
+console.log(chalk.bold("****************** ASSERT *******************"));
+
+if (!(await branchExists("current"))) {
+  console.log(chalk.red("branch not merged to main should not be deleted"));
+}
+
+console.log(chalk.bold("****************** ACT **********************"));
+
+await $`${workingDir}/index.mts --base=master`;
+
+if (await branchExists("current")) {
+  console.log(chalk.red("branch merged to master should be deleted"));
+}

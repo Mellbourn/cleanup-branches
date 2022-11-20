@@ -9,19 +9,23 @@ if (argv.h) {
 
 It automatically removes merged branches, locally and remotely. It prompts for each unmerged branch whether you want to remove it or not.
 
-It is assumed that the main branch that should be merged to is named main, not master.
-The name and commit hash of deleted branches are printed to stdout and logged to the logfile at .local/state/cleanup-branches/log.txt
+By default, it is assumed that the main branch that should be merged to is named main, not master. If this is not correct, use the --branch parameter (e.g. --branch=master).
+
+The name and commit hash of deleted branches are printed to stdout and logged to the log file at .local/state/cleanup-branches/log.txt
 
 Usage: cleanup-branches [options]
 
 Options:
-  -h     Show this help message and exit
-  -r     Also remove remote branches
-  -u     Also remove unmerged branches, interactively
+  -h               Show this help message and exit
+  -r               Also remove remote branches
+  -u               Also remove unmerged branches, interactively
+  --base=<branch>  Use "branch" as the merge target to compare with, instead of "main"
 `);
   echo(`Usage: cleanup-branches [options]`);
   process.exit(0);
 }
+
+const mergeBase: string = argv.base || "main";
 
 const logDir = path.join($.env.HOME!, ".local/state/cleanup-branches");
 const logFile = path.join(logDir, "log.txt");
@@ -39,8 +43,7 @@ const linesToArray = (lines: ProcessOutput) =>
     .map((b) => b.trim())
     .filter((b) => b.length > 0);
 
-const neverDelete =
-  "'^\\*\\|master\\|main\\|develop\\|hotfix\\|temp\\|[0-9]task'";
+const neverDelete = `'^\\*\\|master\\|main\\|${mergeBase}\\|develop\\|hotfix\\|temp\\|[0-9]task'`;
 
 const deleteBranches = async ({
   merged,
@@ -53,7 +56,9 @@ const deleteBranches = async ({
 }) => {
   const getBranches = `git branch ${remote ? "-r" : ""} ${
     merged ? "--merged" : "--no-merged"
-  } ${remote ? "origin/main" : "main"} ${remote ? ' | sd origin/ ""' : ""}`;
+  } ${remote ? `origin/${mergeBase}` : mergeBase} ${
+    remote ? ' | sd origin/ ""' : ""
+  }`;
 
   const cmd = `${getBranches} | grep  -v ${neverDelete}`;
 
@@ -78,7 +83,9 @@ const deleteBranches = async ({
   console.warn("Deleting branches: ", branches);
   for (const branch of branches) {
     if (!merged) {
-      await $`git log origin/main..${(remote ? "origin/" : "") + branch}`;
+      await $`git log origin/${mergeBase}..${
+        (remote ? "origin/" : "") + branch
+      }`;
     }
     const shouldDelete = ask
       ? await question(`delete "${branch}"? [y/N] `)
@@ -112,11 +119,11 @@ if (argv.u) {
     ask: true,
   });
   if (argv.r) {
-  console.log(chalk.yellow.bold("-----------------> Delete remote unmerged"));
-  await deleteBranches({
-    merged: false,
-    remote: true,
-    ask: true,
-  });
+    console.log(chalk.yellow.bold("-----------------> Delete remote unmerged"));
+    await deleteBranches({
+      merged: false,
+      remote: true,
+      ask: true,
+    });
   }
 }
