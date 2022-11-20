@@ -4,6 +4,8 @@
 
 It automatically removes merged branches, locally and remotely. It then prompts for each unmerged branch whether you want to remove it or not.
 
+It is assumed that the main branch that should be merged to is named `main`, not `master`.
+
 ## Installation
 
 ```bash
