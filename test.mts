@@ -1,11 +1,12 @@
 #!/usr/bin/env npx --yes --package=ts-node -- ts-node-esm --swc
 
-import { chalk, fs } from "zx";
+import { chalk, fs, argv, echo } from "zx";
 import { $, cd } from "zx/core";
 
 const workingDir = process.cwd();
 const { stdout } = await $`mktemp -d /tmp/cleanup-test.$(date -Idate).XXXXX`;
-cd(stdout.trim());
+const testDir = stdout.trim();
+cd(testDir);
 const repo = "Mellbourn/cleanup-branches-test";
 await $`gh repo clone ${repo} .`;
 
@@ -61,6 +62,11 @@ await createBranch("mergedPushed1", true, true);
 
 await createBranch("current");
 await $`git switch current`;
+
+if (argv.e) {
+  echo(`Test environment created at ${testDir}`);
+  process.exit(0);
+}
 
 console.log(chalk.bold("****************** ACT **********************"));
 
