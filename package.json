@@ -1,6 +1,6 @@
 {
   "name": "cleanup-branches",
-  "version": "0.0.12",
+  "version": "0.0.13",
   "description": "cli to remove git branches",
   "main": "index.mts",
   "bin": "./index.mts",
