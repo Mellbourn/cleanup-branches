@@ -19,11 +19,14 @@ Options:
   -h               Show this help message and exit
   -r               Also remove remote branches
   -u               Also remove unmerged branches, interactively
+  -v               Verbose output, including git commands
   --base=<branch>  Use "branch" as the merge target to compare with, instead of "main"
 `);
   echo(`Usage: cleanup-branches [options]`);
   process.exit(0);
 }
+
+$.verbose = !!argv.v;
 
 const mergeBase: string = argv.base || "main";
 
@@ -44,6 +47,26 @@ const linesToArray = (lines: ProcessOutput) =>
     .filter((b) => b.length > 0);
 
 const neverDelete = `'^\\*\\|master\\|main\\|${mergeBase}\\|develop\\|hotfix\\|temp\\|[0-9]task'`;
+
+const showLog = async (merged: boolean, remote: boolean, branch: string) => {
+  if (!merged) {
+    const { stdout } = await $`git log origin/${mergeBase}..${
+      (remote ? "origin/" : "") + branch
+    }`;
+    if (!argv.v) {
+      console.log(stdout);
+    }
+  }
+};
+
+const remoteDeletionLog = async (remote: boolean, branch: string) => {
+  if (remote) {
+    const { stdout } = await $`git log -1 --format=%h origin/main`;
+    const remoteDeleteLog = `Deleted branch origin/${branch} (was ${stdout.trim()}).`;
+    console.log(remoteDeleteLog);
+    await fs.appendFile(logFile, remoteDeleteLog);
+  }
+};
 
 const deleteBranches = async ({
   merged,
@@ -82,17 +105,17 @@ const deleteBranches = async ({
 
   console.warn("Deleting branches: ", branches);
   for (const branch of branches) {
-    if (!merged) {
-      await $`git log origin/${mergeBase}..${
-        (remote ? "origin/" : "") + branch
-      }`;
-    }
+    await showLog(merged, remote, branch);
     const shouldDelete = ask
       ? await question(`delete "${branch}"? [y/N] `)
       : "y";
     if (shouldDelete && shouldDelete[0].toLowerCase() === "y") {
       const { stdout } = await $`${deleteBranch.split(" ")} ${branch}`;
+      if (!argv.v) {
+        console.log(stdout);
+      }
       await fs.appendFile(logFile, stdout);
+      await remoteDeletionLog(remote, branch);
     }
   }
 };
