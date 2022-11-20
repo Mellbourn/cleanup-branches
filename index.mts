@@ -53,7 +53,7 @@ const deleteBranches = async ({
 }) => {
   const getBranches = `git branch ${remote ? "-r" : ""} ${
     merged ? "--merged" : "--no-merged"
-  } origin/main ${remote ? ' | sd origin/ ""' : ""}`;
+  } ${remote ? "origin/main" : "main"} ${remote ? ' | sd origin/ ""' : ""}`;
 
   const cmd = `${getBranches} | grep  -v ${neverDelete}`;
 
