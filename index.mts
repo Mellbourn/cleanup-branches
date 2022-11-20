@@ -1,10 +1,13 @@
-#!/usr/bin/env zx
+#!/usr/bin/env npx --yes --package=ts-node -- ts-node-esm
+
+import { question, chalk } from "zx";
+import { $, ProcessOutput } from "zx/core";
 
 // suppress quoting, it doesn't allow for dynamic commands
 const q = $.quote;
 $.quote = (v) => v;
 
-const linesToArray = (lines) =>
+const linesToArray = (lines: ProcessOutput) =>
   lines.stdout
     .split("\n")
     .map((b) => b.trim())
@@ -13,18 +16,26 @@ const linesToArray = (lines) =>
 const neverDelete =
   "'^\\*\\|master\\|main\\|develop\\|hotfix\\|temp\\|[0-9]task'";
 
-const deleteBranches = async ({ merged, remote, ask }) => {
+const deleteBranches = async ({
+  merged,
+  remote,
+  ask,
+}: {
+  merged: boolean;
+  remote: boolean;
+  ask: boolean;
+}) => {
   const getBranches = `git branch ${remote ? "-r" : ""} ${
     merged ? "--merged" : "--no-merged"
   }${remote ? ' | sd origin/ ""' : ""}`;
 
   const cmd = `${getBranches} | grep  -v ${neverDelete}`;
 
-  let branches = [];
+  let branches: string[] = [];
   try {
     const branchLines = await $`${cmd}`;
     branches = linesToArray(branchLines);
-  } catch (p) {
+  } catch (p: any) {
     if (p.exitCode !== 1) {
       throw p;
     }
