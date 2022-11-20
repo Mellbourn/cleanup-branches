@@ -6,7 +6,7 @@
   "bin": "./index.mjs",
   "scripts": {
     "test": "zx test.mjs",
-    "release": "npm version patch && npm publish"
+    "release": "npm version patch && npm publish --access=public"
   },
   "repository": {
     "type": "git",
