@@ -19,7 +19,7 @@
                 "ts-node-esm",
                 "--swc"
             ],
-            "program": "${workspaceFolder}/index.mts"
+            "program": "${workspaceFolder}/test.mts"
         }
     ]
 }
