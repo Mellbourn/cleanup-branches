@@ -1,7 +1,11 @@
 #!/usr/bin/env npx --yes --package=ts-node -- ts-node-esm --swc
 
-import { question, chalk } from "zx";
+import { question, chalk, path, fs } from "zx";
 import { $, ProcessOutput } from "zx/core";
+
+const logDir = path.join($.env.HOME!, ".local/state/cleanup-branches");
+const logFile = path.join(logDir, "log.txt");
+await fs.mkdir(logDir, { recursive: true });
 
 // suppress quoting, it doesn't allow for dynamic commands
 const q = $.quote;
@@ -56,7 +60,8 @@ const deleteBranches = async ({
       ? await question(`delete "${branch}"? [y/N] `)
       : "y";
     if (shouldDelete && shouldDelete[0].toLowerCase() === "y") {
-      await $`${deleteBranch.split(" ")} ${branch}`;
+      const { stdout } = await $`${deleteBranch.split(" ")} ${branch}`;
+      await fs.appendFile(logFile, stdout);
     }
   }
 };

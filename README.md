@@ -6,6 +6,8 @@ It automatically removes merged branches, locally and remotely. It then prompts 
 
 It is assumed that the main branch that should be merged to is named `main`, not `master`.
 
+The name and commit hash of deleted branches are printed to stdout and logged to the logfile at `.local/state/cleanup-branches/log.txt`
+
 ## Installation
 
 ```bash
