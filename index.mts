@@ -111,10 +111,12 @@ if (argv.u) {
     remote: false,
     ask: true,
   });
+  if (argv.r) {
   console.log(chalk.yellow.bold("-----------------> Delete remote unmerged"));
   await deleteBranches({
     merged: false,
     remote: true,
     ask: true,
   });
+  }
 }
