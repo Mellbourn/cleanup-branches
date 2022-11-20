@@ -48,14 +48,21 @@ const linesToArray = (lines: ProcessOutput) =>
 
 const neverDelete = `'^\\*\\|master\\|main\\|${mergeBase}\\|develop\\|hotfix\\|temp\\|[0-9]task'`;
 
+const logStdout = (stdout: string) => {
+  if (!argv.v) {
+    const trimmedOut = stdout.trim();
+    if (trimmedOut.length > 0) {
+      console.log(trimmedOut);
+    }
+  }
+};
+
 const showLog = async (merged: boolean, remote: boolean, branch: string) => {
   if (!merged) {
     const { stdout } = await $`git log origin/${mergeBase}..${
       (remote ? "origin/" : "") + branch
     }`;
-    if (!argv.v) {
-      console.log(stdout);
-    }
+    logStdout(stdout);
   }
 };
 
@@ -64,7 +71,7 @@ const remoteDeletionLog = async (remote: boolean, branch: string) => {
     const { stdout } = await $`git log -1 --format=%h origin/main`;
     const remoteDeleteLog = `Deleted branch origin/${branch} (was ${stdout.trim()}).`;
     console.log(remoteDeleteLog);
-    await fs.appendFile(logFile, remoteDeleteLog);
+    await fs.appendFile(logFile, remoteDeleteLog + "\n");
   }
 };
 
@@ -111,9 +118,7 @@ const deleteBranches = async ({
       : "y";
     if (shouldDelete && shouldDelete[0].toLowerCase() === "y") {
       const { stdout } = await $`${deleteBranch.split(" ")} ${branch}`;
-      if (!argv.v) {
-        console.log(stdout);
-      }
+      logStdout(stdout);
       await fs.appendFile(logFile, stdout);
       await remoteDeletionLog(remote, branch);
     }
