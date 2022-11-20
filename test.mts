@@ -64,7 +64,7 @@ await $`git switch current`;
 
 console.log(chalk.bold("****************** ACT **********************"));
 
-await $`echo $(yes n | ${workingDir}/index.mts)`;
+await $`echo $(${workingDir}/index.mts)`;
 
 console.log(chalk.bold("****************** ASSERT *******************"));
 
@@ -91,7 +91,7 @@ await $`git lol --color=always`;
 
 console.log(chalk.bold("****************** ACT **********************"));
 
-await $`echo $(yes y | ${workingDir}/index.mts)`;
+await $`echo $(yes y | ${workingDir}/index.mts -r -u)`;
 
 console.log(chalk.bold("****************** ASSERT *******************"));
 

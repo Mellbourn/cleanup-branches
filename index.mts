@@ -1,11 +1,33 @@
 #!/usr/bin/env npx --yes --package=ts-node -- ts-node-esm --swc
 
-import { question, chalk, path, fs } from "zx";
+import { question, chalk, path, fs, argv, echo } from "zx";
 import { $, ProcessOutput } from "zx/core";
+
+if (argv.h) {
+  echo(`cleanup-branches`);
+  echo(`A cli tool to interactively remove old branches from git.
+
+It automatically removes merged branches, locally and remotely. It prompts for each unmerged branch whether you want to remove it or not.
+
+It is assumed that the main branch that should be merged to is named main, not master.
+The name and commit hash of deleted branches are printed to stdout and logged to the logfile at .local/state/cleanup-branches/log.txt
+
+Usage: cleanup-branches [options]
+
+Options:
+  -h     Show this help message and exit
+  -r     Also remove remote branches
+  -u     Also remove unmerged branches, interactively
+`);
+  echo(`Usage: cleanup-branches [options]`);
+  process.exit(0);
+}
 
 const logDir = path.join($.env.HOME!, ".local/state/cleanup-branches");
 const logFile = path.join(logDir, "log.txt");
 await fs.mkdir(logDir, { recursive: true });
+const { stdout: pwd } = await $`pwd`;
+await fs.appendFile(logFile, pwd);
 
 // suppress quoting, it doesn't allow for dynamic commands
 const q = $.quote;
@@ -55,7 +77,9 @@ const deleteBranches = async ({
 
   console.warn("Deleting branches: ", branches);
   for (const branch of branches) {
-    await $`git log origin/main..${(remote ? "origin/" : "") + branch}`;
+    if (!merged) {
+      await $`git log origin/main..${(remote ? "origin/" : "") + branch}`;
+    }
     const shouldDelete = ask
       ? await question(`delete "${branch}"? [y/N] `)
       : "y";
@@ -72,21 +96,25 @@ await deleteBranches({
   remote: false,
   ask: false,
 });
-console.log(chalk.bold("-----------------> Delete remote merged"));
-await deleteBranches({
-  merged: true,
-  remote: true,
-  ask: false,
-});
-console.log(chalk.yellow("-----------------> Delete unmerged"));
-await deleteBranches({
-  merged: false,
-  remote: false,
-  ask: true,
-});
-console.log(chalk.yellow.bold("-----------------> Delete unmerged remote"));
-await deleteBranches({
-  merged: false,
-  remote: true,
-  ask: true,
-});
+if (argv.r) {
+  console.log(chalk.bold("-----------------> Delete remote merged"));
+  await deleteBranches({
+    merged: true,
+    remote: true,
+    ask: false,
+  });
+}
+if (argv.u) {
+  console.log(chalk.yellow("-----------------> Delete local unmerged"));
+  await deleteBranches({
+    merged: false,
+    remote: false,
+    ask: true,
+  });
+  console.log(chalk.yellow.bold("-----------------> Delete remote unmerged"));
+  await deleteBranches({
+    merged: false,
+    remote: true,
+    ask: true,
+  });
+}
