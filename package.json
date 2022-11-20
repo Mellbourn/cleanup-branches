@@ -1,0 +1,24 @@
+{
+  "name": "cleanup-branches",
+  "version": "1.0.0",
+  "description": "cli to remove git branches",
+  "main": "index.js",
+  "scripts": {
+    "test": "zx cleanup-branches.spec.mjs"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Mellbourn/cleanup-branches.git"
+  },
+  "keywords": [
+    "git",
+    "cli",
+    "zx"
+  ],
+  "author": "Klas Mellbourn <klas@mellbourn.net>",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/Mellbourn/cleanup-branches/issues"
+  },
+  "homepage": "https://github.com/Mellbourn/cleanup-branches#readme"
+}
