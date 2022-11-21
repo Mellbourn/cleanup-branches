@@ -6,7 +6,7 @@ By default, it is assumed that the main branch that should be merged to is named
 
 The name and commit hash of deleted branches are printed to stdout and logged to the log file at `.local/state/cleanup-branches/log.txt`
 
-```
+```text
 Usage: cleanup-branches [options]
 
 Options:
@@ -16,6 +16,7 @@ Options:
   -v               Verbose output, including git commands
   --base=<branch>  Use "branch" as the merge target to compare with, instead of "main"
 ```
+
 ## Installation
 
 ```bash
