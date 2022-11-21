@@ -68,7 +68,7 @@ const showLog = async (merged: boolean, remote: boolean, branch: string) => {
 
 const remoteDeletionLog = async (remote: boolean, branch: string) => {
   if (remote) {
-    const { stdout } = await $`git log -1 --format=%h origin/main`;
+    const { stdout } = await $`git log -1 --format=%h origin/${branch}`;
     const remoteDeleteLog = `Deleted branch origin/${branch} (was ${stdout.trim()}).`;
     console.log(remoteDeleteLog);
     await fs.appendFile(logFile, remoteDeleteLog + "\n");
@@ -117,10 +117,10 @@ const deleteBranches = async ({
       ? await question(`delete "${branch}"? [y/N] `)
       : "y";
     if (shouldDelete && shouldDelete[0].toLowerCase() === "y") {
+      await remoteDeletionLog(remote, branch);
       const { stdout } = await $`${deleteBranch.split(" ")} ${branch}`;
       logStdout(stdout);
       await fs.appendFile(logFile, stdout);
-      await remoteDeletionLog(remote, branch);
     }
   }
 };
