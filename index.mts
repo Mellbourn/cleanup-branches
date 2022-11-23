@@ -46,7 +46,7 @@ const linesToArray = (lines: ProcessOutput) =>
     .map((b) => b.trim())
     .filter((b) => b.length > 0);
 
-const neverDelete = `'^\\*|master$|main$|${mergeBase}|develop$|hotfix$|temp$|[0-9]task$'`;
+const neverDelete = `'^\\*| HEAD |^[ ]*(master|main|${mergeBase}|develop|hotfix|temp|[0-9]task)$'`;
 
 const logStdout = (stdout: string) => {
   if (!argv.v) {
