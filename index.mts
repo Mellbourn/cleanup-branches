@@ -46,7 +46,7 @@ const linesToArray = (lines: ProcessOutput) =>
     .map((b) => b.trim())
     .filter((b) => b.length > 0);
 
-const neverDelete = `'^\\*\\|master\\|main\\|${mergeBase}\\|develop\\|hotfix\\|temp\\|[0-9]task'`;
+const neverDelete = `'^\\*|master|main|${mergeBase}|develop|hotfix$|temp|[0-9]task'`;
 
 const logStdout = (stdout: string) => {
   if (!argv.v) {
@@ -90,7 +90,7 @@ const deleteBranches = async ({
     remote ? ' | sd origin/ ""' : ""
   }`;
 
-  const cmd = `${getBranches} | grep  -v ${neverDelete}`;
+  const cmd = `${getBranches} | egrep  -v ${neverDelete}`;
 
   let branches: string[] = [];
   try {
