@@ -68,79 +68,71 @@ if (argv.e) {
   process.exit(0);
 }
 
-console.log(chalk.bold("****************** ACT **********************"));
+const logError = (message: string) => console.error(chalk.red(message));
+const logTitle = (message: string) => console.log(chalk.bold(message));
+
+logTitle("****************** ACT **********************");
 
 await $`${workingDir}/index.mts -v`;
 
-console.log(chalk.bold("****************** ASSERT *******************"));
+logTitle("****************** ASSERT *******************");
 
 if (!(await branchExists("current"))) {
-  console.log(
-    chalk.red(
-      "current branch should not have been deleted, since it is currently checked out"
-    )
+  logError(
+    "current branch should not have been deleted, since it is currently checked out"
   );
 }
 
 if (await branchExists("merged1")) {
-  console.log(
-    chalk.red("merged1 should have been deleted, since it is merged")
-  );
+  logError("merged1 should have been deleted, since it is merged");
 }
 
 if (!(await branchExists("unmerged1"))) {
-  console.log(chalk.red("unmerged branches should still exist"));
+  logError("unmerged branches should still exist");
 }
 
-console.log(chalk.bold("****************** REPORT ********************"));
+logTitle("****************** REPORT ********************");
 await $`git lol --color=always`;
 
-console.log(chalk.bold("****************** ACT **********************"));
+logTitle("****************** ACT **********************");
 
 await $`echo $(yes y | ${workingDir}/index.mts -v -r -u)`;
 
-console.log(chalk.bold("****************** ASSERT *******************"));
+logTitle("****************** ASSERT *******************");
 
 if (await branchExists("unmerged1")) {
-  console.log(chalk.red("unmerged branches should be deleted"));
+  logError("unmerged branches should be deleted");
 }
-
 if (await branchExists("unmergedPushed1")) {
-  console.log(
-    chalk.red(
-      "unmerged branches should be deleted even if they have been pushed"
-    )
-  );
+  logError("unmerged branches should be deleted even if they have been pushed");
 }
 if (await branchExists("origin/unmergedPushed1")) {
-  console.log(
-    chalk.red(
-      "unmerged remote branches should be deleted even if they have been pushed"
-    )
+  logError(
+    "unmerged remote branches should be deleted even if they have been pushed"
   );
 }
 
-console.log(chalk.bold("****************** REPORT ********************"));
+logTitle("****************** REPORT ********************");
 await $`git lol --color=always`;
 
 await $`git switch current`;
 await addCommittedFile("another.txt");
 await $`git switch -c master`;
 
-console.log(chalk.bold("****************** ACT **********************"));
+logTitle("****************** ACT **********************");
 
 await $`${workingDir}/index.mts -v`;
 
-console.log(chalk.bold("****************** ASSERT *******************"));
+logTitle("****************** ASSERT *******************");
 
 if (!(await branchExists("current"))) {
-  console.log(chalk.red("branch not merged to main should not be deleted"));
+  logError("branch not merged to main should not be deleted");
 }
 
-console.log(chalk.bold("****************** ACT **********************"));
+logTitle("****************** ACT **********************");
 
 await $`${workingDir}/index.mts -v --base=master`;
 
 if (await branchExists("current")) {
-  console.log(chalk.red("branch merged to master should be deleted"));
+  logError("branch merged to master should be deleted");
 }
