@@ -3,7 +3,9 @@
 import { question, chalk, path, fs, argv, echo } from "zx";
 import { $, ProcessOutput } from "zx/core";
 
-if (argv.h) {
+const { v: verbose, r: removeRemote, u: removeUnmerged, h: help, base } = argv;
+
+if (help) {
   echo(`cleanup-branches`);
   echo(`A cli tool to interactively remove old branches from git.
 
@@ -26,9 +28,9 @@ Options:
   process.exit(0);
 }
 
-$.verbose = !!argv.v;
+$.verbose = !!verbose;
 
-const mergeBase: string = argv.base || "main";
+const mergeBase: string = base || "main";
 
 const logDir = path.join($.env.HOME!, ".local/state/cleanup-branches");
 const logFile = path.join(logDir, "log.txt");
@@ -49,7 +51,7 @@ const linesToArray = (lines: ProcessOutput) =>
 const neverDelete = `'^\\*| HEAD |^[ ]*(master|main|${mergeBase}|develop|hotfix|temp|[0-9]task)$'`;
 
 const logStdout = (stdout: string) => {
-  if (!argv.v) {
+  if (!verbose) {
     const trimmedOut = stdout.trim();
     if (trimmedOut.length > 0) {
       console.log(trimmedOut);
@@ -131,7 +133,7 @@ await deleteBranches({
   remote: false,
   ask: false,
 });
-if (argv.r) {
+if (removeRemote) {
   console.log(chalk.bold("-----------------> Delete remote merged"));
   await deleteBranches({
     merged: true,
@@ -139,14 +141,14 @@ if (argv.r) {
     ask: false,
   });
 }
-if (argv.u) {
+if (removeUnmerged) {
   console.log(chalk.yellow("-----------------> Delete local unmerged"));
   await deleteBranches({
     merged: false,
     remote: false,
     ask: true,
   });
-  if (argv.r) {
+  if (removeRemote) {
     console.log(chalk.yellow.bold("-----------------> Delete remote unmerged"));
     await deleteBranches({
       merged: false,
