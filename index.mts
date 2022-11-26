@@ -29,6 +29,7 @@ Usage: cleanup-branches [options]
 
 Options:
   -h               Show this help message and exit
+  -v               Show version and exit
   -r               Also remove remote branches
   -u               Also remove unmerged branches, interactively
   --age=<age>      Minimum age to remove unmerged branches, e.g. "5 days" or "1 month". Defaults to "2 weeks".
