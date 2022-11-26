@@ -6,7 +6,7 @@
   "bin": "./index.mts",
   "scripts": {
     "test": "./test.mts",
-    "release": "npm version patch && npm publish --access=public && git push"
+    "release": "./release.mts"
   },
   "repository": {
     "type": "git",
