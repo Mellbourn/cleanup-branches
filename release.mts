@@ -2,8 +2,8 @@
 
 import { $ } from "zx/core";
 
-const { stdout: version } =
-  await $`node -p "require('./package.json').version"`;
+const { stdout } = await $`node -p "require('./package.json').version"`;
+const version = stdout.trim();
 
 await $`npm version patch`;
 await $`npm publish --access=public`;
