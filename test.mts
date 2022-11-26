@@ -70,7 +70,7 @@ if (argv.e) {
 
 console.log(chalk.bold("****************** ACT **********************"));
 
-await $`${workingDir}/index.mts`;
+await $`${workingDir}/index.mts -v`;
 
 console.log(chalk.bold("****************** ASSERT *******************"));
 
@@ -97,7 +97,7 @@ await $`git lol --color=always`;
 
 console.log(chalk.bold("****************** ACT **********************"));
 
-await $`echo $(yes y | ${workingDir}/index.mts -r -u)`;
+await $`echo $(yes y | ${workingDir}/index.mts -v -r -u)`;
 
 console.log(chalk.bold("****************** ASSERT *******************"));
 
@@ -129,7 +129,7 @@ await $`git switch -c master`;
 
 console.log(chalk.bold("****************** ACT **********************"));
 
-await $`${workingDir}/index.mts`;
+await $`${workingDir}/index.mts -v`;
 
 console.log(chalk.bold("****************** ASSERT *******************"));
 
@@ -139,7 +139,7 @@ if (!(await branchExists("current"))) {
 
 console.log(chalk.bold("****************** ACT **********************"));
 
-await $`${workingDir}/index.mts --base=master`;
+await $`${workingDir}/index.mts -v --base=master`;
 
 if (await branchExists("current")) {
   console.log(chalk.red("branch merged to master should be deleted"));
