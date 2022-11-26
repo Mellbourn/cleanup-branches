@@ -45,9 +45,11 @@ const mergeBase: string = base || "main";
 
 const logDir = path.join($.env.HOME!, ".local/state/cleanup-branches");
 const logFile = path.join(logDir, "log.txt");
-await fs.mkdir(logDir, { recursive: true });
-const { stdout: pwd } = await $`pwd`;
-await fs.appendFile(logFile, `\n${pwd}`);
+if (!dryRun) {
+  await fs.mkdir(logDir, { recursive: true });
+  const { stdout: pwd } = await $`pwd`;
+  await fs.appendFile(logFile, `\n${pwd}`);
+}
 
 // suppress quoting, it doesn't allow for dynamic commands
 const q = $.quote;
