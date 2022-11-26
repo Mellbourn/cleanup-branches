@@ -2,7 +2,7 @@
 
 import { question, chalk, path, fs, argv, echo } from "zx";
 import { $, ProcessOutput } from "zx/core";
-import { version } from "./version.ts";
+import { version } from "./version";
 
 const {
   d: debug,
