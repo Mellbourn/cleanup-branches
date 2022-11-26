@@ -3,7 +3,14 @@
 import { question, chalk, path, fs, argv, echo } from "zx";
 import { $, ProcessOutput } from "zx/core";
 
-const { v: verbose, r: removeRemote, u: removeUnmerged, h: help, base } = argv;
+const {
+  v: verbose,
+  r: removeRemote,
+  u: removeUnmerged,
+  h: help,
+  base,
+  age,
+} = argv;
 
 if (help) {
   echo(`cleanup-branches`);
@@ -21,6 +28,7 @@ Options:
   -h               Show this help message and exit
   -r               Also remove remote branches
   -u               Also remove unmerged branches, interactively
+  --age=<age>      Minimum age to remove unmerged branches, e.g. "5 days" or "2 weeks"
   -v               Verbose output, including git commands
   --base=<branch>  Use "branch" as the merge target to compare with, instead of "main"
 `);
@@ -57,6 +65,21 @@ const logStdout = (stdout: string) => {
       console.log(trimmedOut);
     }
   }
+};
+
+const tooNew = async (
+  merged: boolean,
+  remote: boolean,
+  branch: string,
+  age: string
+): Promise<boolean> => {
+  if (merged) {
+    return false;
+  }
+  const { stdout } = await $`git log --no-walk --before="${age}" ${
+    (remote ? "origin/" : "") + branch
+  }`;
+  return stdout.trim().length === 0;
 };
 
 const showLog = async (merged: boolean, remote: boolean, branch: string) => {
@@ -103,7 +126,15 @@ const deleteBranches = async ({
       throw p;
     }
   }
-  if (branches.length === 0) {
+  const oldBranches: string[] = [];
+  for (const branch of branches) {
+    if (await tooNew(merged, remote, branch, age)) {
+      continue;
+    }
+    oldBranches.push(branch);
+  }
+
+  if (oldBranches.length === 0) {
     console.log(`No branches to delete`);
     return;
   }
@@ -112,8 +143,11 @@ const deleteBranches = async ({
     ? "git push origin --delete"
     : "git branch " + (merged ? "-d" : "-D");
 
-  console.warn("Deleting branches: ", branches);
-  for (const branch of branches) {
+  console.warn("Deleting branches: ", oldBranches);
+  for (const branch of oldBranches) {
+    if (await tooNew(merged, remote, branch, age)) {
+      continue;
+    }
     await showLog(merged, remote, branch);
     const shouldDelete = ask
       ? await question(`delete "${branch}"? [y/N] `)
