@@ -9,6 +9,7 @@ const tag = `v${stdout.trim()}`;
 
 await $`npm publish --access=public`;
 
+await $`git push`;
 await $`git push --tags`;
 
 await $`gh release create ${tag} --generate-notes ./index.mts#cleanup-branches`;
