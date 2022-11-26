@@ -12,4 +12,6 @@ await $`npm publish --access=public`;
 await $`git push`;
 await $`git push --tags`;
 
-await $`gh release create ${tag} --generate-notes ./index.mts#cleanup-branches`;
+await $`cp ./index.mts $TMPDIR/cleanup-branches`;
+
+await $`gh release create ${tag} --generate-notes $TMPDIR/cleanup-branches`;
