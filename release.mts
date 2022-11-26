@@ -3,11 +3,10 @@
 import { $ } from "zx/core";
 
 const { stdout } = await $`node -p "require('./package.json').version"`;
-const version = stdout.trim();
+const tag = `v${stdout.trim()}`;
 
 await $`npm version patch`;
 await $`npm publish --access=public`;
-await $`git push`;
-await $`gh release create v${version} --generate-notes --draft`;
-await $`gh release upload v${version} index.mts`;
-await $`gh release edit v${version} --draft=false`;
+await $`git tag ${tag}`;
+await $`git push --tags`;
+await $`gh release create ${tag} --generate-notes ./index.mts#cleanup-branches`;
