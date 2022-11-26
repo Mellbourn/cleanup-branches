@@ -9,6 +9,7 @@ const {
   u: removeUnmerged,
   h: help,
   n: dryRun,
+  v: showVersion,
   base,
 } = argv;
 
@@ -40,6 +41,11 @@ Options:
 }
 
 $.verbose = !!debug;
+
+if (showVersion) {
+  console.log(process.env.npm_package_version);
+  process.exit(0);
+}
 
 const mergeBase: string = base || "main";
 
