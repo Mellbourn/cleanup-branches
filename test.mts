@@ -70,8 +70,21 @@ if (argv.e) {
   process.exit(0);
 }
 
-const logError = (message: string) => console.error(chalk.red(message));
+const logError = (message: string) => {
+  console.error(chalk.red(message));
+  process.exit(1);
+};
 const logTitle = (message: string) => console.log(chalk.bold(message));
+
+logTitle("****************** ACT dry run **********************");
+
+await $`${workingDir}/index.mts -v -n`;
+
+logTitle("****************** ASSERT *******************");
+
+if (!(await branchExists("merged1"))) {
+  logError("merged1 should not have been deleted, since this is a dry run");
+}
 
 logTitle("****************** ACT default **********************");
 

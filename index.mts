@@ -3,7 +3,14 @@
 import { question, chalk, path, fs, argv, echo } from "zx";
 import { $, ProcessOutput } from "zx/core";
 
-const { v: verbose, r: removeRemote, u: removeUnmerged, h: help, base } = argv;
+const {
+  v: verbose,
+  r: removeRemote,
+  u: removeUnmerged,
+  h: help,
+  n: dryRun,
+  base,
+} = argv;
 
 const age = argv.age || "2 weeks";
 
@@ -24,6 +31,7 @@ Options:
   -r               Also remove remote branches
   -u               Also remove unmerged branches, interactively
   --age=<age>      Minimum age to remove unmerged branches, e.g. "5 days" or "1 month". Defaults to "2 weeks".
+  -n               Dry-run, do nothing, just print what would be done
   -v               Verbose output, including git commands
   --base=<branch>  Use "branch" as the merge target to compare with, instead of "main"
 `);
@@ -148,10 +156,14 @@ const deleteBranches = async ({
       ? await question(`delete "${branch}"? [y/N] `)
       : "y";
     if (shouldDelete && shouldDelete[0].toLowerCase() === "y") {
-      await remoteDeletionLog(remote, branch);
-      const { stdout } = await $`${deleteBranch.split(" ")} ${branch}`;
-      logStdout(stdout);
-      await fs.appendFile(logFile, stdout);
+      if (dryRun) {
+        console.log(`Would delete ${branch}`);
+      } else {
+        await remoteDeletionLog(remote, branch);
+        const { stdout } = await $`${deleteBranch.split(" ")} ${branch}`;
+        logStdout(stdout);
+        await fs.appendFile(logFile, stdout);
+      }
     }
   }
 };

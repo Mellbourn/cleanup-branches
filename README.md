@@ -14,6 +14,7 @@ Options:
   -r               Also remove remote branches
   -u               Also remove unmerged branches, interactively
   --age=<age>      Minimum age to remove unmerged branches, e.g. "5 days" or "1 month". Defaults to "2 weeks".
+  -n               Dry-run, do nothing, just print what would be done
   -v               Verbose output, including git commands
   --base=<branch>  Use "branch" as the merge target to compare with, instead of "main"
 ```
