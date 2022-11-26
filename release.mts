@@ -8,6 +8,6 @@ const { stdout: version } =
 await $`npm version patch`;
 await $`npm publish --access=public`;
 await $`git push`;
-await $`gh release create v${version}) --generate-notes --draft`;
-await $`gh release upload v${version}) index.mts`;
-await $`gh release edit v${version}) --draft=false`;
+await $`gh release create v${version} --generate-notes --draft`;
+await $`gh release upload v${version} index.mts`;
+await $`gh release edit v${version} --draft=false`;
