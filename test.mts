@@ -18,9 +18,11 @@ const addCommittedFile = async (name: string) => {
   }
 };
 
-const branchExists = async (name: string) => {
+const branchExists = async (name: string, remote: boolean = false) => {
   try {
-    const { exitCode } = await $`git show-ref --quiet refs/heads/${name}`;
+    const { exitCode } = await $`git show-ref --quiet ${
+      remote ? `refs/remotes/origin/${name}` : `refs/heads/${name}`
+    }`;
     return exitCode === 0;
   } catch (p) {
     return false;
@@ -71,7 +73,7 @@ if (argv.e) {
 const logError = (message: string) => console.error(chalk.red(message));
 const logTitle = (message: string) => console.log(chalk.bold(message));
 
-logTitle("****************** ACT **********************");
+logTitle("****************** ACT default **********************");
 
 await $`${workingDir}/index.mts -v`;
 
@@ -91,12 +93,41 @@ if (!(await branchExists("unmerged1"))) {
   logError("unmerged branches should still exist");
 }
 
+if (!(await branchExists("unmergedPushed1", true))) {
+  logError(
+    "unmerged remote branches should not be deleted even if they have been pushed"
+  );
+}
 logTitle("****************** REPORT ********************");
 await $`git lol --color=always`;
 
-logTitle("****************** ACT **********************");
+logTitle(
+  "****************** ACT remote and unmerged default age **********************"
+);
 
-await $`echo $(yes y | ${workingDir}/index.mts -v -r -u)`;
+await $`${workingDir}/index.mts -v -r -u`;
+
+logTitle("****************** ASSERT *******************");
+
+if (!(await branchExists("unmerged1"))) {
+  logError("new unmerged branches should not be deleted");
+}
+if (!(await branchExists("unmergedPushed1"))) {
+  logError(
+    "new unmerged branches should not be deleted even if they have been pushed"
+  );
+}
+if (!(await branchExists("unmergedPushed1", true))) {
+  logError(
+    "new unmerged remote branches should not be deleted even if they have been pushed"
+  );
+}
+
+logTitle(
+  "****************** ACT remote and unmerged default age **********************"
+);
+
+await $`echo $(yes y | ${workingDir}/index.mts -v --age="1 seconds" -r -u)`;
 
 logTitle("****************** ASSERT *******************");
 
@@ -106,7 +137,7 @@ if (await branchExists("unmerged1")) {
 if (await branchExists("unmergedPushed1")) {
   logError("unmerged branches should be deleted even if they have been pushed");
 }
-if (await branchExists("origin/unmergedPushed1")) {
+if (await branchExists("unmergedPushed1", true)) {
   logError(
     "unmerged remote branches should be deleted even if they have been pushed"
   );
@@ -121,7 +152,7 @@ await $`git switch -c master`;
 
 logTitle("****************** ACT **********************");
 
-await $`${workingDir}/index.mts -v`;
+await $`${workingDir}/index.mts -v --age="1 seconds"`;
 
 logTitle("****************** ASSERT *******************");
 
@@ -129,9 +160,9 @@ if (!(await branchExists("current"))) {
   logError("branch not merged to main should not be deleted");
 }
 
-logTitle("****************** ACT **********************");
+logTitle("****************** ACT specified base **********************");
 
-await $`${workingDir}/index.mts -v --base=master`;
+await $`${workingDir}/index.mts -v --age="1 seconds" --base=master`;
 
 if (await branchExists("current")) {
   logError("branch merged to master should be deleted");

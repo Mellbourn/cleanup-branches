@@ -3,14 +3,9 @@
 import { question, chalk, path, fs, argv, echo } from "zx";
 import { $, ProcessOutput } from "zx/core";
 
-const {
-  v: verbose,
-  r: removeRemote,
-  u: removeUnmerged,
-  h: help,
-  base,
-  age,
-} = argv;
+const { v: verbose, r: removeRemote, u: removeUnmerged, h: help, base } = argv;
+
+const age = argv.age || "2 weeks";
 
 if (help) {
   echo(`cleanup-branches`);
@@ -28,7 +23,7 @@ Options:
   -h               Show this help message and exit
   -r               Also remove remote branches
   -u               Also remove unmerged branches, interactively
-  --age=<age>      Minimum age to remove unmerged branches, e.g. "5 days" or "2 weeks"
+  --age=<age>      Minimum age to remove unmerged branches, e.g. "5 days" or "1 month". Defaults to "2 weeks".
   -v               Verbose output, including git commands
   --base=<branch>  Use "branch" as the merge target to compare with, instead of "main"
 `);
