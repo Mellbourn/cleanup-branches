@@ -6,7 +6,8 @@
   "bin": "./index.mts",
   "scripts": {
     "test": "./test.mts",
-    "release": "./release.mts"
+    "release": "./release.mts",
+    "version": "genversion --es6 --semi version.ts && git add version.ts"
   },
   "repository": {
     "type": "git",
