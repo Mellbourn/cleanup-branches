@@ -4,7 +4,7 @@ import { chalk, fs, argv, echo } from "zx";
 import { $, cd } from "zx/core";
 
 const workingDir = process.cwd();
-const { stdout } = await $`mktemp -d /tmp/cleanup-test.$(date -Idate).XXXXX`;
+const { stdout } = await $`mktemp -d /tmp/cleanup-test.$(date -u +%FT%T).XX`;
 const testDir = stdout.trim();
 cd(testDir);
 const repo = "Mellbourn/cleanup-branches-test";
