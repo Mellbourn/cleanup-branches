@@ -4,7 +4,7 @@ import { question, chalk, path, fs, argv, echo } from "zx";
 import { $, ProcessOutput } from "zx/core";
 
 const {
-  v: verbose,
+  d: debug,
   r: removeRemote,
   u: removeUnmerged,
   h: help,
@@ -32,14 +32,14 @@ Options:
   -u               Also remove unmerged branches, interactively
   --age=<age>      Minimum age to remove unmerged branches, e.g. "5 days" or "1 month". Defaults to "2 weeks".
   -n               Dry-run, do nothing, just print what would be done
-  -v               Verbose output, including git commands
+  -d               Verbose debug output, including git commands
   --base=<branch>  Use "branch" as the merge target to compare with, instead of "main"
 `);
   echo(`Usage: cleanup-branches [options]`);
   process.exit(0);
 }
 
-$.verbose = !!verbose;
+$.verbose = !!debug;
 
 const mergeBase: string = base || "main";
 
@@ -64,7 +64,7 @@ const linesToArray = (lines: ProcessOutput) =>
 const neverDelete = `'^\\*|^\\+| HEAD |^[ ]*(master|main|${mergeBase}|develop|hotfix|temp|[0-9]task)$'`;
 
 const logStdout = (stdout: string) => {
-  if (!verbose) {
+  if (!debug) {
     const trimmedOut = stdout.trim();
     if (trimmedOut.length > 0) {
       console.log(trimmedOut);

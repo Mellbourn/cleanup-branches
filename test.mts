@@ -78,7 +78,7 @@ const logTitle = (message: string) => console.log(chalk.bold(message));
 
 logTitle("****************** ACT dry run **********************");
 
-await $`${workingDir}/index.mts -v -n`;
+await $`${workingDir}/index.mts -d -n`;
 
 logTitle("****************** ASSERT *******************");
 
@@ -88,7 +88,7 @@ if (!(await branchExists("merged1"))) {
 
 logTitle("****************** ACT default **********************");
 
-await $`${workingDir}/index.mts -v`;
+await $`${workingDir}/index.mts -d`;
 
 logTitle("****************** ASSERT *******************");
 
@@ -118,7 +118,7 @@ logTitle(
   "****************** ACT remote and unmerged default age **********************"
 );
 
-await $`${workingDir}/index.mts -v -r -u`;
+await $`${workingDir}/index.mts -d -r -u`;
 
 logTitle("****************** ASSERT *******************");
 
@@ -140,7 +140,7 @@ logTitle(
   "****************** ACT remote and unmerged default age **********************"
 );
 
-await $`echo $(yes y | ${workingDir}/index.mts -v --age="1 seconds" -r -u)`;
+await $`echo $(yes y | ${workingDir}/index.mts -d --age="1 seconds" -r -u)`;
 
 logTitle("****************** ASSERT *******************");
 
@@ -165,7 +165,7 @@ await $`git switch -c master`;
 
 logTitle("****************** ACT **********************");
 
-await $`${workingDir}/index.mts -v --age="1 seconds"`;
+await $`${workingDir}/index.mts -d --age="1 seconds"`;
 
 logTitle("****************** ASSERT *******************");
 
@@ -175,7 +175,7 @@ if (!(await branchExists("current"))) {
 
 logTitle("****************** ACT specified base **********************");
 
-await $`${workingDir}/index.mts -v --age="1 seconds" --base=master`;
+await $`${workingDir}/index.mts -d --age="1 seconds" --base=master`;
 
 if (await branchExists("current")) {
   logError("branch merged to master should be deleted");
