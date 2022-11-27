@@ -76,7 +76,7 @@ const logError = (message: string) => {
 };
 const logTitle = (message: string) => console.log(chalk.bold(message));
 
-logTitle("****************** ACT dry run **********************");
+logTitle("****************** ACT dry run **************");
 
 await $`${workingDir}/index.mts -d -n`;
 
@@ -86,7 +86,7 @@ if (!(await branchExists("merged1"))) {
   logError("merged1 should not have been deleted, since this is a dry run");
 }
 
-logTitle("****************** ACT default **********************");
+logTitle("****************** ACT default **************");
 
 await $`${workingDir}/index.mts -d`;
 
@@ -114,9 +114,7 @@ if (!(await branchExists("unmergedPushed1", true))) {
 logTitle("****************** REPORT ********************");
 await $`git lol --color=always`;
 
-logTitle(
-  "****************** ACT remote and unmerged default age **********************"
-);
+logTitle("*********** ACT remote and unmerged default age *****");
 
 await $`${workingDir}/index.mts -d -r -u`;
 
@@ -136,9 +134,7 @@ if (!(await branchExists("unmergedPushed1", true))) {
   );
 }
 
-logTitle(
-  "****************** ACT remote and unmerged default age **********************"
-);
+logTitle("********* ACT remote and unmerged default age ******");
 
 await $`echo $(yes y | ${workingDir}/index.mts -d --age="1 seconds" -r -u)`;
 
@@ -173,7 +169,7 @@ if (!(await branchExists("current"))) {
   logError("branch not merged to main should not be deleted");
 }
 
-logTitle("****************** ACT specified base **********************");
+logTitle("****************** ACT specified base *******");
 
 await $`${workingDir}/index.mts -d --age="1 seconds" --base=master`;
 
