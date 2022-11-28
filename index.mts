@@ -3,6 +3,8 @@
 import { question, chalk, path, fs, argv, echo } from "zx";
 import { $, ProcessOutput } from "zx/core";
 
+import yargs from "yargs/yargs";
+
 const {
   d: debug,
   r: removeRemote,
